@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/VadSmith/movies-explorer-api/issues"
   },
-  "homepage": "https://github.com/VadSmith/movies-explorer-api#readme"
+  "homepage": "https://github.com/VadSmith/movies-explorer-api#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
