@@ -12,7 +12,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 // const cors = require('./middlewares/cors');
 
-const { PORT = 3000, BASE_URL = 'http://localhost:3001' } = process.env;
+const { PORT = 3001, BASE_URL = 'http://localhost:3001' } = process.env;
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/beatfilmsdb', {
