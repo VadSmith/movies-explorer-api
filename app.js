@@ -114,5 +114,5 @@ app.use(errors());
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log('Express is on port 3000!', BASE_URL);
+  console.log('Movie-explorer: Express is on port 3001!', BASE_URL);
 });
