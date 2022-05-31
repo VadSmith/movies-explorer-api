@@ -60,7 +60,7 @@ app.use((req, res, next) => {
   return null;
 });
 
-app.use(requestLogger);
+// app.use(requestLogger);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -68,24 +68,24 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+// app.post('/signin', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), login);
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-  }),
-}), createUser);
+// app.post('/signup', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//     name: Joi.string().min(2).max(30),
+//     about: Joi.string().min(2).max(30),
+//     avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
+//   }),
+// }), createUser);
 
-app.use(auth);
+// app.use(auth);
 // # возвращает информацию о пользователе(email и имя)
 // GET /users/me
 
@@ -101,16 +101,16 @@ app.use(auth);
 
 // # удаляет сохранённый фильм по id
 // DELETE / movies / _id
-app.get('/logout', logout);
+// app.get('/logout', logout);
 // app.use(require('./routes/movies'));
 // app.use(require('./routes/users'));
 
-app.use(() => { throw new NotFoundError('Страница не найдена'); });
-app.use(errorLogger);
+// app.use(() => { throw new NotFoundError('Страница не найдена'); });
+// app.use(errorLogger);
 
 app.use(errors());
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
