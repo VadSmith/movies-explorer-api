@@ -61,8 +61,8 @@ app.use((req, res, next) => {
 });
 
 // app.use(requestLogger);
-app.get('/api/', (req, res) => {
-  console.log(res.send(req));
+app.get('/', (req, res) => {
+  console.log(res.send(req.headers));
 });
 app.get('/crash-test', () => {
   setTimeout(() => {
