@@ -1,10 +1,10 @@
-require('dotenv').config();
+// require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const helmet = require('helmet');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+// const helmet = require('helmet');
+// const bodyParser = require('body-parser');
+// const cookieParser = require('cookie-parser');
+// const { celebrate, Joi, errors } = require('celebrate');
 // const { login, logout, createUser } = require('./controllers/user');
 // // const { requestLogger, errorLogger } = require('./middlewares/logger');
 // const auth = require('./middlewares/auth');
@@ -37,10 +37,10 @@ const allowedCors = [
   'https://vad.nomoredomains.xyz',
 ];
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(helmet());
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cookieParser());
+// app.use(helmet());
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 
 // app.use(requestLogger);
 app.get('/', (req, res) => {
-  console.log(res.send(req.headers));
+  console.log(res.send('success test'));
 });
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -110,11 +110,11 @@ app.get('/crash-test', () => {
 // app.use(() => { throw new NotFoundError('Страница не найдена'); });
 // app.use(errorLogger);
 
-app.use(errors());
+// app.use(errors());
 
 // app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log('Express is on port 3000!', BASE_URL);
+  console.log('Express is on port 3001!', BASE_URL);
 });
