@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi, errors } = require('celebrate');
+// const { celebrate, Joi, errors } = require('celebrate');
 // const { login, logout, createUser } = require('./controllers/users');
 // const { requestLogger, errorLogger } = require('./middlewares/logger');
 // const auth = require('./middlewares/auth');
@@ -97,7 +97,7 @@ app.get('/crash-test', () => {
 // app.use(() => { throw new NotFoundError('Страница не найдена'); });
 // app.use(errorLogger);
 
-app.use(errors());
+// app.use(errors());
 
 // app.use(errorHandler);
 
