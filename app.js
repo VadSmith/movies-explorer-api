@@ -61,7 +61,9 @@ app.use((req, res, next) => {
 });
 
 // app.use(requestLogger);
-
+app.get('/', (req, res) => {
+  res.send('express / success', req.body);
+});
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
