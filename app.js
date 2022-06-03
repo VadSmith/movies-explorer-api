@@ -5,11 +5,11 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { login, logout, createUser } = require('./controllers/users');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
-const auth = require('./middlewares/auth');
-const errorHandler = require('./middlewares/errorHandler');
-const NotFoundError = require('./errors/NotFoundError');
+// const { login, logout, createUser } = require('./controllers/users');
+// const { requestLogger, errorLogger } = require('./middlewares/logger');
+// const auth = require('./middlewares/auth');
+// const errorHandler = require('./middlewares/errorHandler');
+// const NotFoundError = require('./errors/NotFoundError');
 // const cors = require('./middlewares/cors');
 
 const { PORT = 3000, BASE_URL = 'http://localhost:3000' } = process.env;
@@ -60,7 +60,7 @@ app.use((req, res, next) => {
   return null;
 });
 
-app.use(requestLogger);
+// app.use(requestLogger);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -68,35 +68,34 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+// app.post('/signin', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), login);
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-  }),
-}), createUser);
+// app.post('/signup', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//     name: Joi.string().min(2).max(30),
+//   }),
+// }), createUser);
 
-app.use(auth);
+// app.use(auth);
 
-app.get('/logout', logout);
+// app.get('/logout', logout);
 // app.use(require('./routes/movies'));
-app.use(require('./routes/users'));
+// app.use(require('./routes/users'));
 
-app.use(() => { throw new NotFoundError('Страница не найдена'); });
-app.use(errorLogger);
+// app.use(() => { throw new NotFoundError('Страница не найдена'); });
+// app.use(errorLogger);
 
 app.use(errors());
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log('Express is on port 3000!', BASE_URL);
 });
