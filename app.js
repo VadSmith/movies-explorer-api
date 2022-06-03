@@ -64,6 +64,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   res.send('express "get /" route success');
 });
+app.post('/', (req, res) => {
+  res.send('express "post /" route success test');
+});
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
