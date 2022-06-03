@@ -86,7 +86,7 @@ app.post('/signup', celebrate({
 app.use(auth);
 
 app.get('/logout', logout);
-app.use(require('./routes/movies'));
+// app.use(require('./routes/movies'));
 app.use(require('./routes/users'));
 
 app.use(() => { throw new NotFoundError('Страница не найдена'); });
