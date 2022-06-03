@@ -90,21 +90,10 @@ const movieSchema = new mongoose.Schema({
 
   // movieId — id фильма, который содержится в ответе сервиса MoviesExplorer.Обязательное поле
   movieId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
+    type: String,
     required: true,
   },
 
-  likes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    default: [],
-  }],
-
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
 });
 
 module.exports = mongoose.model('movie', movieSchema);
