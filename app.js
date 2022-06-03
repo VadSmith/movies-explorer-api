@@ -1,21 +1,21 @@
-// require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-// const helmet = require('helmet');
-// const bodyParser = require('body-parser');
-// const cookieParser = require('cookie-parser');
-// const { celebrate, Joi, errors } = require('celebrate');
-// const { login, logout, createUser } = require('./controllers/user');
-// // const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const auth = require('./middlewares/auth');
-// const errorHandler = require('./middlewares/errorHandler');
-// const NotFoundError = require('./errors/NotFoundError');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const { celebrate, Joi, errors } = require('celebrate');
+const { login, logout, createUser } = require('./controllers/users');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/errorHandler');
+const NotFoundError = require('./errors/NotFoundError');
 // const cors = require('./middlewares/cors');
 
-const { PORT = 3001, BASE_URL = 'http://localhost:3001' } = process.env;
+const { PORT = 3000, BASE_URL = 'http://localhost:3000' } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/beatfilmsdb', {
+mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   // next are deprecated
   // useCreateIndex: true,
@@ -37,10 +37,10 @@ const allowedCors = [
   'https://vad.nomoredomains.xyz',
 ];
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
-// app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(helmet());
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
@@ -60,61 +60,43 @@ app.use((req, res, next) => {
   return null;
 });
 
-// app.use(requestLogger);
-app.get('/', (req, res) => {
-  console.log(res.send('success test'));
-});
+app.use(requestLogger);
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
 
-// app.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//   }),
-// }), login);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
-// app.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//     name: Joi.string().min(2).max(30),
-//     about: Joi.string().min(2).max(30),
-//     avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-//   }),
-// }), createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+  }),
+}), createUser);
 
-// app.use(auth);
-// # возвращает информацию о пользователе(email и имя)
-// GET /users/me
+app.use(auth);
 
-// # обновляет информацию о пользователе(email и имя)
-// PATCH /users/me
-
-// # возвращает все сохранённые текущим  пользователем фильмы
-// GET /movies
-
-// # создаёт фильм с переданными в теле
-// # country, director, duration, year, description, image, trailer, nameRU, nameEN и thumbnail, movieId
-// POST /movies
-
-// # удаляет сохранённый фильм по id
-// DELETE / movies / _id
-// app.get('/logout', logout);
+app.get('/logout', logout);
 // app.use(require('./routes/movies'));
-// app.use(require('./routes/users'));
+app.use(require('./routes/users'));
 
-// app.use(() => { throw new NotFoundError('Страница не найдена'); });
-// app.use(errorLogger);
+app.use(() => { throw new NotFoundError('Страница не найдена'); });
+app.use(errorLogger);
 
-// app.use(errors());
+app.use(errors());
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log('Express is on port 3001!', BASE_URL);
+  console.log('Express is on port 3000!', BASE_URL);
 });
