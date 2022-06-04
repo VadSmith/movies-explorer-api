@@ -14,11 +14,13 @@ const secret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 // eslint-disable-next-line consistent-return
 const login = (req, res, next) => {
   const { email, password } = req.body;
+  // console.log(`in login: email=${email} password=${password}`);
 
   if (!email || !password) { return next(new CastError('Email или пароль не могут быть пустыми')); }
 
   User.findOne({ email }).select('+password')
     .then((user) => {
+      console.log(`in login findOne: user=${user}`);
       if (!user) { return next(new UnauthorizedError('Неправильный email или пароль')); }
 
       return bcrypt.compare(password, user.password)
@@ -26,12 +28,13 @@ const login = (req, res, next) => {
         .then((isValidPassword) => {
           if (!isValidPassword) { return next(new UnauthorizedError('Неправильный email или пароль')); }
           const token = jwt.sign({ _id: user._id }, secret, { expiresIn: '7d' });
+          // console.log(`in login token: ${token}`);
           res.status(200);
           res.cookie('jwt', token, {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            secure: true,
+            // secure: true, //включить потом на домене
           });
           res.send({ message: 'Успешный вход' });
         })
@@ -80,51 +83,7 @@ const patchUser = (req, res, next) => {
     });
 };
 
-// Обновить аватар
-const patchAvatar = (req, res, next) => {
-  User.findByIdAndUpdate(
-    { _id: req.user._id },
-    { avatar: req.body.avatar },
-    {
-      new: true,
-      runValidators: true,
-      // upsert: true
-    },
-  )
-    // eslint-disable-next-line consistent-return
-    .then((user) => {
-      if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
-      }
-      res.send(user);
-    })
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      // if (err.name === 'CastError') {
-      //   return next(new CastError('Ошибка: Введен некорректный id пользователя'));
-      // }
-      if (err.name === 'ValidationError') {
-        return next(new ValidationError('Ошибка: Введены некорректные данные'));
-      }
-      next(err);
-    });
-};
-
-// Получение списка юзеров
-const getUsers = (req, res, next) => {
-  User.find({})
-    // eslint-disable-next-line consistent-return
-    .then((users) => {
-      if (!users) {
-        return next(new NotFoundError('Пользователей нет'));
-      }
-      res.send(users);
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-
+// Возвращает информацию о пользователе(email и имя)
 const getUsersMe = (req, res, next) => {
   User.findById(req.user._id)
     // eslint-disable-next-line consistent-return
@@ -142,42 +101,17 @@ const getUsersMe = (req, res, next) => {
     });
 };
 
-// Поиск юзера по ID
-const getUser = (req, res, next) => {
-  User.findById({ _id: req.params.userId })
-    // eslint-disable-next-line consistent-return
-    .then((user) => {
-      // console.log(user);
-      if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
-        // throw new NotFoundError('Пользователь не найден');
-      }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      // console.log(err);
-      // if (err.name === 'CastError') {
-      //   return next(new CastError('Ошибка: Введен некорректный id пользователя'));
-      // }
-      next(err);
-    });
-};
-
+// Создание нового пользователя
 const createUser = (req, res, next) => {
   const {
     name, email, password,
   } = req.body;
-  console.log(`in createuser: name=${name} email=${email} password=${password}`);
+  // console.log(`in createuser: name=${name} email=${email} password=${password}`);
   bcrypt.hash(password, 10)
     .then((hash) => User.create(
       {
         name, email, password: hash,
       },
-      // с этими опциями не видит передаваемых полей
-      // {
-      //   new: true,
-      //   runValidators: true,
-      // },
     ))
     .then((user) => {
       res.send(
@@ -189,7 +123,6 @@ const createUser = (req, res, next) => {
       );
     })
     .catch((err) => {
-      // console.log(err);
       if (err.code === 11000) {
         next(new UserExistsError('Пользователь с таким email существует'));
       } else if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -202,11 +135,8 @@ const createUser = (req, res, next) => {
 
 module.exports = {
   createUser,
-  getUser,
-  getUsers,
   getUsersMe,
   patchUser,
-  patchAvatar,
   login,
   logout,
   JWT_SECRET,
