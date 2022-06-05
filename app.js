@@ -8,6 +8,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const { login, logout, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
+const limiter = require('./utils/ratelimiter');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
 // const cors = require('./middlewares/cors');
@@ -41,6 +42,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
+app.use(limiter);
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
