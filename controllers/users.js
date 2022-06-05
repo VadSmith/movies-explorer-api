@@ -31,7 +31,7 @@ const login = (req, res, next) => {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            // secure: true, //включить потом на домене
+            secure: true, //включить потом на домене
           });
           res.send({ message: 'Успешный вход' });
         })
