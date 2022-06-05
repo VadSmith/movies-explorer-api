@@ -22,16 +22,15 @@ const login = (req, res, next) => {
       if (!user) { return next(new UnauthorizedError('Неправильный email или пароль')); }
 
       return bcrypt.compare(password, user.password)
-        // eslint-disable-next-line consistent-return
         .then((isValidPassword) => {
-          if (!isValidPassword) { return next(new UnauthorizedError('Неправильный email или пароль')); }
+          if (!isValidPassword) { next(new UnauthorizedError('Неправильный email или пароль')); }
           const token = jwt.sign({ _id: user._id }, secret, { expiresIn: '7d' });
           res.status(200);
           res.cookie('jwt', token, {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            secure: true, //включить потом на домене
+            secure: true,
           });
           res.send({ message: 'Успешный вход' });
         })
