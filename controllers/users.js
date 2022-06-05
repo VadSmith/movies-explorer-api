@@ -11,15 +11,14 @@ const User = require('../models/users');
 const { NODE_ENV, JWT_SECRET } = process.env;
 const secret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 
-// eslint-disable-next-line consistent-return
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) { return next(new CastError('Email или пароль не могут быть пустыми')); }
+  if (!email || !password) { next(new CastError('Email или пароль не могут быть пустыми')); }
 
   User.findOne({ email }).select('+password')
     .then((user) => {
-      if (!user) { return next(new UnauthorizedError('Неправильный email или пароль')); }
+      if (!user) { next(new UnauthorizedError('Неправильный email или пароль')); }
 
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
@@ -63,17 +62,15 @@ const patchUser = (req, res, next) => {
       // upsert: true // если пользователь не найден, он будет создан
     },
   )
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError('Пользователь не найден'));
       }
       res.send(user);
     })
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Ошибка: Введены некорректные данные'));
+        next(new ValidationError('Ошибка: Введены некорректные данные'));
       }
       next(err);
     });
@@ -82,17 +79,13 @@ const patchUser = (req, res, next) => {
 // Возвращает информацию о пользователе(email и имя)
 const getUsersMe = (req, res, next) => {
   User.findById(req.user._id)
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError('Пользователь не найден'));
       }
       res.status(200).send(user);
     })
     .catch((err) => {
-      // if (err.name === 'CastError') {
-      //   return next(new CastError('Ошибка: Введен некорректный id пользователя!'));
-      // }
       next(err);
     });
 };
