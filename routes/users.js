@@ -14,7 +14,7 @@ router.get('/users/me', getUsersMe);
 // PATCH /users/me
 router.patch('/users/me', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    name: Joi.string().required(),
+    email: Joi.string().email(),
+    name: Joi.string(),
   }),
 }), patchUser);
