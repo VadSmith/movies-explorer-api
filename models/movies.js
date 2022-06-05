@@ -76,6 +76,12 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
 
+  // movieId — id фильма, который содержится в ответе сервиса MoviesExplorer.Обязательное поле
+  movieId: {
+    type: String,
+    required: true,
+  },
+
   // nameRU — название фильма на русском языке.Обязательное поле - строка
   nameRU: {
     type: String,
@@ -87,13 +93,6 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  // movieId — id фильма, который содержится в ответе сервиса MoviesExplorer.Обязательное поле
-  movieId: {
-    type: String,
-    required: true,
-  },
-
 });
 
 module.exports = mongoose.model('movie', movieSchema);

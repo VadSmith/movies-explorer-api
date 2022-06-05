@@ -86,14 +86,13 @@ app.post('/signup', celebrate({
 app.use(auth);
 
 app.get('/logout', logout);
-// app.use(require('./routes/movies'));
+app.use(require('./routes/movies'));
 app.use(require('./routes/users'));
 
 app.use(() => { throw new NotFoundError('Страница не найдена'); });
+
 app.use(errorLogger);
-
 app.use(errors());
-
 app.use(errorHandler);
 
 app.listen(PORT, () => {

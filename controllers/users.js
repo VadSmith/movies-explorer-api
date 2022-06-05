@@ -14,13 +14,11 @@ const secret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 // eslint-disable-next-line consistent-return
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  // console.log(`in login: email=${email} password=${password}`);
 
   if (!email || !password) { return next(new CastError('Email или пароль не могут быть пустыми')); }
 
   User.findOne({ email }).select('+password')
     .then((user) => {
-      console.log(`in login findOne: user=${user}`);
       if (!user) { return next(new UnauthorizedError('Неправильный email или пароль')); }
 
       return bcrypt.compare(password, user.password)
@@ -28,7 +26,6 @@ const login = (req, res, next) => {
         .then((isValidPassword) => {
           if (!isValidPassword) { return next(new UnauthorizedError('Неправильный email или пароль')); }
           const token = jwt.sign({ _id: user._id }, secret, { expiresIn: '7d' });
-          // console.log(`in login token: ${token}`);
           res.status(200);
           res.cookie('jwt', token, {
             maxAge: 3600000,
@@ -106,7 +103,6 @@ const createUser = (req, res, next) => {
   const {
     name, email, password,
   } = req.body;
-  // console.log(`in createuser: name=${name} email=${email} password=${password}`);
   bcrypt.hash(password, 10)
     .then((hash) => User.create(
       {
