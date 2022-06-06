@@ -37,8 +37,8 @@ const login = (req, res, next) => {
     });
 };
 
-// Logout
-const logout = (req, res, next) => {
+// Signout
+const signout = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
@@ -126,6 +126,6 @@ module.exports = {
   getUsersMe,
   patchUser,
   login,
-  logout,
+  signout,
   JWT_SECRET,
 };

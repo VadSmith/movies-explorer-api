@@ -20,7 +20,7 @@ const getMovies = (req, res, next) => {
 
 // Создание фильма
 // country, director, duration, year, description,
-// image, trailer, nameRU, nameEN, thumbnail, movieId
+// image, trailer, nameRU, nameEN, thumbnail, movieId, owner
 const createMovie = (req, res, next) => {
   const {
     movieId, country, director, duration, year, description,

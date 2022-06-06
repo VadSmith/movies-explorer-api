@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { login, logout, createUser } = require('./controllers/users');
+const { login, signout, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
 const limiter = require('./utils/ratelimiter');
@@ -87,7 +87,7 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.get('/logout', logout);
+app.get('/signout', signout);
 app.use(require('./routes/movies'));
 app.use(require('./routes/users'));
 
