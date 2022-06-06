@@ -10,6 +10,7 @@ const getMovies = (req, res, next) => {
     .then((movies) => {
       if (!movies) {
         next(new NotFoundError('Фильмы не найдены'));
+        return;
       }
       res.send(movies);
     })

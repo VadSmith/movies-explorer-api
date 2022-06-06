@@ -1,7 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const CastError = require('../errors/CastError');
+// const CastError = require('../errors/CastError');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
@@ -13,8 +13,6 @@ const secret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) { next(new CastError('Email или пароль не могут быть пустыми')); }
 
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -29,12 +27,12 @@ const login = (req, res, next) => {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            secure: true,
+            secure: true, // включать на сервере
           });
           res.send({ message: 'Успешный вход' });
         })
         .catch(() => next());
-    });
+    }).catch(() => next());
 };
 
 // Signout
@@ -55,7 +53,7 @@ const signout = (req, res, next) => {
 const patchUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
-    { name: req.body.name, about: req.body.about },
+    { name: req.body.name, email: req.body.email },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
@@ -65,14 +63,16 @@ const patchUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Пользователь не найден'));
+        return;
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Ошибка: Введены некорректные данные'));
-      }
-      next(err);
+      } else if (err.code === 11000) {
+        next(new UserExistsError('Пользователь с таким email существует'));
+      } else { next(err); }
     });
 };
 
@@ -82,6 +82,7 @@ const getUsersMe = (req, res, next) => {
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Пользователь не найден'));
+        return;
       }
       res.status(200).send(user);
     })

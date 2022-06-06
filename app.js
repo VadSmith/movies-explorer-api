@@ -11,64 +11,21 @@ const auth = require('./middlewares/auth');
 const limiter = require('./utils/ratelimiter');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/NotFoundError');
-// const cors = require('./middlewares/cors');
+const cors = require('./middlewares/cors');
+const { EXPRESS_URL, EXPRESS_PORT, MONGODB_URL } = require('./config');
 
-const { PORT = 3000, BASE_URL = 'http://localhost:3000' } = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  // next are deprecated
-  // useCreateIndex: true,
-  // useFindAndModify: false,
-});
-
-const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'localhost:3000',
-  'localhost:3001',
-  'http://localhost:3001',
-  'https://localhost:3001',
-  'http://localhost:3000',
-  'https://localhost:3000',
-  'http://api.vad.nomoreparties.sbs',
-  'https://api.vad.nomoreparties.sbs',
-  'http://vad.nomoredomains.xyz',
-  'https://vad.nomoredomains.xyz',
-];
+mongoose.connect(MONGODB_URL, { useNewUrlParser: true });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
+app.use(requestLogger);
 app.use(limiter);
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  const { method } = req;
-  const requestHeaders = req.headers['access-control-request-headers'];
-  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', true);
-  }
-  if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.end();
-  }
-  next();
-  return null;
-});
-
-app.use(requestLogger);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
+app.use(cors);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -97,6 +54,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log('Express is on port 3000!', BASE_URL);
+app.listen(EXPRESS_PORT, () => {
+  console.log('Express is on port 3000!', EXPRESS_URL);
 });
