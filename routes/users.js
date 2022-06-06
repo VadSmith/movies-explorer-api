@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
 const {
-  patchUser, getUsersMe,
+  patchUser, getUsersMe, signout,
 } = require('../controllers/users');
 
 module.exports = router;
@@ -18,3 +18,5 @@ router.patch('/users/me', celebrate({
     name: Joi.string(),
   }),
 }), patchUser);
+
+router.get('/signout', signout);
