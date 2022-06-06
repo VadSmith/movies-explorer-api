@@ -7,9 +7,7 @@ const ValidationError = require('../errors/ValidationError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const UserExistsError = require('../errors/UserExistsError');
 const User = require('../models/users');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
-const secret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
+const { JWT_SECRET } = require('../config');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -21,7 +19,7 @@ const login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
           if (!isValidPassword) { next(new UnauthorizedError('Неправильный email или пароль')); }
-          const token = jwt.sign({ _id: user._id }, secret, { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
           res.status(200);
           res.cookie('jwt', token, {
             maxAge: 3600000,
