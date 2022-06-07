@@ -24,7 +24,7 @@ const login = (req, res, next) => {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            // secure: true, // включать на сервере
+            secure: true, // включать на сервере
           });
           res.send({ message: 'Успешный вход' });
         })
