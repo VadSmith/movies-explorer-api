@@ -10,6 +10,7 @@ const { JWT_SECRET } = require('../config');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -17,14 +18,17 @@ const login = (req, res, next) => {
 
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
-          if (!isValidPassword) { next(new UnauthorizedError('Неправильный email или пароль')); }
+          if (!isValidPassword) {
+            next(new UnauthorizedError('Неправильный email или пароль'));
+            return;
+          }
           const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
           res.status(200);
           res.cookie('jwt', token, {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: 'none',
-            secure: true, // включать на сервере
+            secure: false, // включать на сервере
           });
           res.send({ message: 'Успешный вход' });
         })

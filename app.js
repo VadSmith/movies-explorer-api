@@ -13,7 +13,8 @@ const { EXPRESS_URL, EXPRESS_PORT, MONGODB_URL } = require('./config');
 
 const app = express();
 
-mongoose.connect(MONGODB_URL, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URL, { useNewUrlParser: true, family: 4 });
+// mongoose.connect(MONGODB_URL, { useNewUrlParser: true });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
